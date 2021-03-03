@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/linear"
     tools:context=".ChoiGameActivity">
 
     <RelativeLayout
@@ -17,13 +18,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:padding="10dp">
+        android:padding="15dp">
         <ImageView
             android:background="#000000"
             android:scaleType="centerCrop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/CauHoi">
+            android:src="@drawable/cauhoi">
 
         </ImageView>
     </RelativeLayout>
@@ -31,12 +32,23 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#0000ff"
-        android:minHeight="100dp"></RelativeLayout>
+        android:minHeight="100dp">
+        <GridView
+            android:id="@+id/gdvCauTraLoi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"></GridView>
+    </RelativeLayout>
 
     <RelativeLayout
+        android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#ffff00"></RelativeLayout>
+        android:layout_height="match_parent">
+        <GridView
+            android:id="@+id/gdvDapAn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"></GridView>
+    </RelativeLayout>
 
 </LinearLayout>
