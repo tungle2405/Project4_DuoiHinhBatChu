@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.project4.duoihinhbatchu.adapter.DapAnAdapter;
 
@@ -54,14 +55,18 @@ public class ChoiGameActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String s = (String)parent.getItemAtPosition(position);
                 if(s.length()!=0 && index<arrCauTraLoi.size()){
-                    if(arrCauTraLoi.get(index).length()!=0){
-                        return;
+                    for(int i=0;i<arrCauTraLoi.size();i++){
+                        if(arrCauTraLoi.get(i).length()==0){
+                            index = i;
+                            break;
+                        }
                     }
                     arrDapAn.set(position,"");
                     arrCauTraLoi.set(index,s);
                     index++;
                     hienThiCauTraLoi();
                     hienThiDapAn();
+                    checkWin();
                 }
             }
         });
@@ -107,6 +112,16 @@ public class ChoiGameActivity extends AppCompatActivity {
             int vt = r.nextInt(arrDapAn.size());
             arrDapAn.set(i,arrDapAn.get(vt));
             arrDapAn.set(vt,s);
+        }
+    }
+    private void checkWin(){
+        String s="";
+        for (String s1:arrCauTraLoi){
+            s=s+s1;
+        }
+        s=s.toUpperCase();
+        if(s.equals(dapAn.toUpperCase())){
+            Toast.makeText(this,"Bạn đã chiến thắng!!!",Toast.LENGTH_SHORT).show();
         }
     }
 }
