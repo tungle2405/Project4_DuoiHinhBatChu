@@ -24,6 +24,7 @@ public class DapAnAdapter extends ArrayAdapter<String> {
         this.arr = new ArrayList<>(objects);
     }
 
+    //Chia các chữ ngẫu nhiên có từ câu đố để thêm vào các TextView câu trả lời
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

@@ -4,14 +4,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@drawable/linear"
+    android:orientation="vertical"
     tools:context=".ChoiGameActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="#00F000">
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/txvDiemNguoiDung"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="@drawable/bg_diem"
+                android:gravity="center"
+                android:minWidth="180dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="0"
+                android:textColor="#fff"
+                android:textSize="30dp">
+            </TextView>
+
+            <TextView
+                android:id="@+id/txvThoiGian"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="@drawable/bg_diem"
+                android:gravity="center"
+                android:minWidth="180dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="1:00 "
+                android:textColor="#fff"
+                android:textSize="30dp">
+            </TextView>
+        </LinearLayout>
 
     </RelativeLayout>
 
@@ -19,20 +54,20 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:padding="15dp">
+
         <ImageView
             android:id="@+id/imgAnhCauDo"
-            android:scaleType="fitCenter"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/cauhoi">
-
-        </ImageView>
+            android:scaleType="fitCenter"
+            android:src="@drawable/cauhoi"></ImageView>
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:minHeight="100dp">
+
         <GridView
             android:id="@+id/gdvCauTraLoi"
             android:layout_width="match_parent"
@@ -41,14 +76,46 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:gravity="center">
+
         <GridView
             android:id="@+id/gdvDapAn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="60dp"
             android:gravity="center"></GridView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:padding="5dp">
+
+            <Button
+                android:onClick="moGoiY"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="3dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_btn"
+                android:gravity="center"
+                android:text="Gợi Ý"
+                android:textColor="#fff"
+                android:textSize="15dp"></Button>
+
+            <Button
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/bg_btn"
+                android:gravity="center"
+                android:text="Đổi câu hỏi"
+                android:textColor="#fff"
+                android:textSize="15dp"></Button>
+        </LinearLayout>
     </RelativeLayout>
+
 
 </LinearLayout>
