@@ -12,12 +12,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.project4.duoihinhbatchu.adapter.DapAnAdapter;
+import com.project4.duoihinhbatchu.model.ChoiGameModels;
+import com.project4.duoihinhbatchu.object.CauDo;
 
 import java.util.ArrayList;
 import java.util.Random;
-
-import model.ChoiGameModels;
-import object.CauDo;
 
 public class ChoiGameActivity extends AppCompatActivity {
 
@@ -145,9 +144,13 @@ public class ChoiGameActivity extends AppCompatActivity {
             //Theo bảng mã ASCII đển chọn ngẫu nhiên các chữ in hoa có độ dài chữ gấp 2 lần đáp án
             String s = "" + (char) (r.nextInt(26) + 65);
             arrDapAn.add(s);
+        }
+        for (int i = 0; i < dapAn.length()/2; i++) {
+            //Theo bảng mã ASCII đển chọn ngẫu nhiên các chữ in hoa có độ dài kí tự bằng 1/2 lần đáp án
             String s1 = "" + (char) (r.nextInt(26) + 65);
             arrDapAn.add(s1);
         }
+        ;
         //Chia đáp án thành các chữ riêng lẻ in hoa
         for (int i = 0; i < dapAn.length(); i++) {
             String s = "" + dapAn.charAt(i);
@@ -174,7 +177,7 @@ public class ChoiGameActivity extends AppCompatActivity {
             Toast.makeText(this, "Bạn đã qua màn mới!!!", Toast.LENGTH_SHORT).show();
             //Lấy điểm đang có hiện tại cộng thêm điểm sau khi qua màn rồi lưu lại thông tin
             models.layThongTin();
-            models.nguoiDung.diem = models.nguoiDung.diem + 10;
+            models.nguoiDung.diem = models.nguoiDung.diem + 20;
             models.luuThongTin();
             //Hiện thị câu đố tiếp theo
             hienCauDo();
@@ -185,20 +188,21 @@ public class ChoiGameActivity extends AppCompatActivity {
     public void moGoiY(View view) {
         //Kiểm tra xem người dùng còn điểm để dùng gợi ý hay ko
         models.layThongTin();
-        if(models.nguoiDung.diem < 10){
+        if(models.nguoiDung.diem < 5){
             Toast.makeText(this, "Bạn đã hết điểm", Toast.LENGTH_SHORT).show();
             return;
         }
         int id = 1;
-        //Kiểm tra người dùng chưa trả lời đc ở câu nào
+        //Kiểm tra điều kiện người dùng chưa trả lời đc ở ô nào
         for (int i = 0; i < arrCauTraLoi.size(); i++) {
             if (arrCauTraLoi.get(i).length()==0) {
                 id = i;
                 break;
             }
         }
-        //Kiểm tra điều kiện người dùng trả lời đúng hết
+        //Kiểm tra điều kiện người dùng điền hết các ô
         if (id == -1) {
+            //Kiểm tra ô nào có kết quả khác với đáp án thì trả ra vị trí lỗi sai
             for (int i = 0; i < arrCauTraLoi.size(); i++) {
                 String s = dapAn.toUpperCase().charAt(i) + "";
                 if (!arrCauTraLoi.get(i).toUpperCase().equals(s)) {
@@ -206,6 +210,7 @@ public class ChoiGameActivity extends AppCompatActivity {
                     break;
                 }
             }
+            //Sau khi tìm đc vị trí lỗi sai sẽ thay đổi vị trí kí tự trên đáp án vs câu trả lời bên dưới
             for (int i = 0; i < arrDapAn.size(); i++) {
                 if (arrDapAn.get(i).length() == 0) {
                     arrDapAn.set(i, arrCauTraLoi.get(id));
@@ -213,15 +218,15 @@ public class ChoiGameActivity extends AppCompatActivity {
             }
         }
         String goiY = "" + dapAn.charAt(id);
-        goiY.toUpperCase();
-        //Kiểm tra trường hợp có kí tự trong câu trả lời trùng với gợi ý thì phải xoá nó đi
+        goiY = goiY.toUpperCase();
+        //Kiểm tra trường hợp trong đáp án có kí tự trùng với gợi ý thì xoá nó đi
         for (int i = 0; i<arrCauTraLoi.size();i++){
             if(arrCauTraLoi.get(i).toUpperCase().equals(goiY)){
                 arrCauTraLoi.set(i,"");
                 break;
             }
         }
-        //Lấy ra vị trí người dùng đang cần gợi ý
+        //Tìm ra chữ cái đc gợi ý trong câu trả lời và xoá nó đi
         for (int i = 0; i < arrDapAn.size(); i++) {
             if (goiY.equals(arrDapAn.get(i))) {
                 arrDapAn.set(i, "");
@@ -236,5 +241,18 @@ public class ChoiGameActivity extends AppCompatActivity {
         models.luuThongTin();
         txvDiemNguoiDung.setText("Điểm: " + models.nguoiDung.diem);
 
+    }
+
+    public void doiCauHoi(View view) {
+        //Kiểm tra xem người dùng còn điểm để dùng đổi câu hỏi hay ko
+        models.layThongTin();
+        if(models.nguoiDung.diem < 10){
+            Toast.makeText(this, "Bạn đã hết điểm", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        models.nguoiDung.diem = models.nguoiDung.diem - 10;
+        models.luuThongTin();
+        txvDiemNguoiDung.setText("Điểm: " + models.nguoiDung.diem);
+        hienCauDo();
     }
 }

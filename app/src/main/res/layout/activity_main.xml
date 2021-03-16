@@ -26,6 +26,7 @@
         android:gravity="center">
 
         <Button
+            android:onClick="choiGame"
             android:background="@drawable/button"
             android:text="Chơi"
             android:textAllCaps="false"

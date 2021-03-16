@@ -1,4 +1,4 @@
-package object;
+package com.project4.duoihinhbatchu.object;
 
 //Tạo lớp CauDo có các thành phần của câu đố là tên, đáp án và ảnh của câu đố
 public class CauDo {
