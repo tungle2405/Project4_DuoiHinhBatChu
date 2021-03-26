@@ -2,6 +2,7 @@ package com.project4.duoihinhbatchu;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -17,8 +18,8 @@ import com.project4.duoihinhbatchu.model.ChoiGameModels;
 import com.project4.duoihinhbatchu.object.CauDo;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Random;
-
 
 
 public class ChoiGameActivity extends AppCompatActivity {
@@ -29,6 +30,10 @@ public class ChoiGameActivity extends AppCompatActivity {
     private String dapAn = "CaTinh";
     private int demCauHoi = 0;
 
+    private static final long THOI_GIAN_BAT_DAU = 31000;
+    private long mThoiGianConLai = THOI_GIAN_BAT_DAU;
+    private CountDownTimer mDemNguoc;
+
     ArrayList<String> arrCauTraLoi;
     GridView gdvCauTraLoi;
     ArrayList<String> arrDapAn;
@@ -36,6 +41,8 @@ public class ChoiGameActivity extends AppCompatActivity {
 
     ImageView imgAnhCauDo;
     TextView txvDiemNguoiDung;
+
+    TextView txvThoiGian;
 
     int index = 0;
 
@@ -55,6 +62,7 @@ public class ChoiGameActivity extends AppCompatActivity {
         gdvDapAn = findViewById(R.id.gdvDapAn);
         imgAnhCauDo = findViewById(R.id.imgAnhCauDo);
         txvDiemNguoiDung = findViewById(R.id.txvDiemNguoiDung);
+        txvThoiGian = findViewById(R.id.txvThoiGian);
     }
 
     //Khởi tạo mới câu trả lời, đáp án và gọi đến models để tạo ra câu hỏi
@@ -73,6 +81,22 @@ public class ChoiGameActivity extends AppCompatActivity {
             intent.putExtra("SCORE", models.nguoiDung.diem);
             startActivity(intent);
         }
+
+        //Tạo bộ đếm, khi hết giờ thì chuyển đến màn kết thúc trò chơi
+        mDemNguoc = new CountDownTimer(mThoiGianConLai,1000){
+            @Override
+            public void onTick(long mThoiGianKetThuc){
+                mThoiGianConLai = mThoiGianKetThuc;
+                capNhatThoiGian();
+            }
+            @Override
+            public void onFinish(){
+                Intent intent = new Intent(getApplicationContext(), KetQuaActivity.class);
+                intent.putExtra("SCORE", models.nguoiDung.diem);
+                startActivity(intent);
+            }
+        }.start();
+
         cauDo = models.layCauDo();
         dapAn = cauDo.dapAn;
         bamData();
@@ -116,6 +140,7 @@ public class ChoiGameActivity extends AppCompatActivity {
                 }
             }
         });
+
         //Sự kiện nhấn vào GridView gdvCauTraLoi
         gdvCauTraLoi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -150,23 +175,26 @@ public class ChoiGameActivity extends AppCompatActivity {
         arrCauTraLoi.clear();
         arrDapAn.clear();
         Random r = new Random();
+
         for (int i = 0; i < dapAn.length(); i++) {
             arrCauTraLoi.add("");
             //Theo bảng mã ASCII đển chọn ngẫu nhiên các chữ in hoa có độ dài chữ gấp 2 lần đáp án
             String s = "" + (char) (r.nextInt(26) + 65);
             arrDapAn.add(s);
         }
+
         for (int i = 0; i < dapAn.length()/2; i++) {
             //Theo bảng mã ASCII đển chọn ngẫu nhiên các chữ in hoa có độ dài kí tự bằng 1/2 lần đáp án
             String s1 = "" + (char) (r.nextInt(26) + 65);
             arrDapAn.add(s1);
         }
-        ;
+
         //Chia đáp án thành các chữ riêng lẻ in hoa
         for (int i = 0; i < dapAn.length(); i++) {
             String s = "" + dapAn.charAt(i);
             arrDapAn.set(i, s.toUpperCase());
         }
+
         //Thay đổi vị trí ngẫu nhiên các chữ có đáp án
         for (int i = 0; i < arrDapAn.size(); i++) {
             String s = arrDapAn.get(i);
@@ -183,6 +211,7 @@ public class ChoiGameActivity extends AppCompatActivity {
             s = s + s1;
         }
         s = s.toUpperCase();
+
         //Nếu trả lời đúng đáp án
         if (s.equals(dapAn.toUpperCase())) {
             Toast.makeText(this, "Bạn đã qua màn mới!!!", Toast.LENGTH_SHORT).show();
@@ -190,6 +219,8 @@ public class ChoiGameActivity extends AppCompatActivity {
             models.layThongTin();
             models.nguoiDung.diem = models.nguoiDung.diem + 20;
             models.luuThongTin();
+            mDemNguoc.cancel();
+            lamMoiThoiGian();
             //Hiện thị câu đố tiếp theo
             hienCauDo();
         }
@@ -200,10 +231,12 @@ public class ChoiGameActivity extends AppCompatActivity {
     public void moGoiY(View view) {
         //Kiểm tra xem người dùng còn điểm để dùng gợi ý hay ko
         models.layThongTin();
+
         if(models.nguoiDung.diem < 5){
             Toast.makeText(this, "Bạn đã hết điểm", Toast.LENGTH_SHORT).show();
             return;
         }
+
         int id = -1;
         //Kiểm tra điều kiện người dùng chưa trả lời đc ở ô nào
         for (int i = 0; i < arrCauTraLoi.size(); i++) {
@@ -212,6 +245,7 @@ public class ChoiGameActivity extends AppCompatActivity {
                 break;
             }
         }
+
         //Kiểm tra điều kiện người dùng điền hết các ô
         if (id == -1) {
             //Kiểm tra ô nào có kết quả khác với đáp án thì trả ra vị trí lỗi sai
@@ -222,6 +256,7 @@ public class ChoiGameActivity extends AppCompatActivity {
                     break;
                 }
             }
+
             //Sau khi tìm đc vị trí lỗi sai sẽ thay đổi vị trí kí tự trên đáp án vs câu trả lời bên dưới
             for (int i = 0; i < arrDapAn.size(); i++) {
                 if (arrDapAn.get(i).length() == 0) {
@@ -229,6 +264,7 @@ public class ChoiGameActivity extends AppCompatActivity {
                     break;
                 }
             }
+
             String goiY = "" + dapAn.charAt(id);
             goiY = goiY.toUpperCase();
             //Tìm ra chữ cái đc gợi ý trong câu trả lời và xoá nó đi
@@ -239,6 +275,7 @@ public class ChoiGameActivity extends AppCompatActivity {
                 }
             }
         }
+
         String goiY = "" + dapAn.charAt(id);
         goiY = goiY.toUpperCase();
         //Kiểm tra trường hợp trong đáp án có kí tự trùng với gợi ý thì xoá nó đi
@@ -277,5 +314,19 @@ public class ChoiGameActivity extends AppCompatActivity {
         models.luuThongTin();
         txvDiemNguoiDung.setText("Điểm: " + models.nguoiDung.diem);
         hienCauDo();
+    }
+
+    //Hàm cập nhật thời gian
+    private void capNhatThoiGian(){
+        int minutes = (int)(mThoiGianConLai/1000)/60;
+        int seconds = (int)(mThoiGianConLai/1000)%60;
+
+        String timeLeftFormatted = String.format(Locale.getDefault(),"%02d:%02d",minutes,seconds);
+        txvThoiGian.setText(timeLeftFormatted);
+    }
+
+    //Hàm reset thời gian
+    private void lamMoiThoiGian(){
+        mThoiGianConLai = THOI_GIAN_BAT_DAU;
     }
 }
