@@ -1,5 +1,6 @@
 package com.project4.duoihinhbatchu;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,12 +19,15 @@ import com.project4.duoihinhbatchu.object.CauDo;
 import java.util.ArrayList;
 import java.util.Random;
 
+
+
 public class ChoiGameActivity extends AppCompatActivity {
 
     ChoiGameModels models;
     CauDo cauDo;
 
     private String dapAn = "CaTinh";
+    private int demCauHoi = 0;
 
     ArrayList<String> arrCauTraLoi;
     GridView gdvCauTraLoi;
@@ -58,11 +62,17 @@ public class ChoiGameActivity extends AppCompatActivity {
         models = new ChoiGameModels(this);
         arrCauTraLoi = new ArrayList<>();
         arrDapAn = new ArrayList<>();
-
+        models.lamMoiThongTin();
     }
 
     //Hiển thị câu đố bằng glide với
     private void hienCauDo() {
+        //Kiểm tra xem có phải câu hỏi cuối cùng hay không, nếu đúng chuyển sang màn kết quả
+        if(demCauHoi ==  DATA.getData().arrCauDo.size()){
+            Intent intent = new Intent(getApplicationContext(), KetQuaActivity.class);
+            intent.putExtra("SCORE", models.nguoiDung.diem);
+            startActivity(intent);
+        }
         cauDo = models.layCauDo();
         dapAn = cauDo.dapAn;
         bamData();
@@ -73,6 +83,7 @@ public class ChoiGameActivity extends AppCompatActivity {
                 .into(imgAnhCauDo);
         models.layThongTin();
         txvDiemNguoiDung.setText("Điểm: " + models.nguoiDung.diem);
+        demCauHoi++;
     }
 
     //Hiển thị câu trả lời cho người dùng nhập
@@ -182,6 +193,7 @@ public class ChoiGameActivity extends AppCompatActivity {
             //Hiện thị câu đố tiếp theo
             hienCauDo();
         }
+
     }
 
     //Hàm tạo gợi ý cho người dùng
@@ -192,7 +204,7 @@ public class ChoiGameActivity extends AppCompatActivity {
             Toast.makeText(this, "Bạn đã hết điểm", Toast.LENGTH_SHORT).show();
             return;
         }
-        int id = 1;
+        int id = -1;
         //Kiểm tra điều kiện người dùng chưa trả lời đc ở ô nào
         for (int i = 0; i < arrCauTraLoi.size(); i++) {
             if (arrCauTraLoi.get(i).length()==0) {
@@ -214,25 +226,36 @@ public class ChoiGameActivity extends AppCompatActivity {
             for (int i = 0; i < arrDapAn.size(); i++) {
                 if (arrDapAn.get(i).length() == 0) {
                     arrDapAn.set(i, arrCauTraLoi.get(id));
+                    break;
+                }
+            }
+            String goiY = "" + dapAn.charAt(id);
+            goiY = goiY.toUpperCase();
+            //Tìm ra chữ cái đc gợi ý trong câu trả lời và xoá nó đi
+            for (int i = id; i<arrCauTraLoi.size();i++){
+                if(arrCauTraLoi.get(i).toUpperCase().equals(goiY)){
+                    arrCauTraLoi.set(i,"");
+                    break;
                 }
             }
         }
         String goiY = "" + dapAn.charAt(id);
         goiY = goiY.toUpperCase();
         //Kiểm tra trường hợp trong đáp án có kí tự trùng với gợi ý thì xoá nó đi
-        for (int i = 0; i<arrCauTraLoi.size();i++){
-            if(arrCauTraLoi.get(i).toUpperCase().equals(goiY)){
-                arrCauTraLoi.set(i,"");
-                break;
-            }
-        }
-        //Tìm ra chữ cái đc gợi ý trong câu trả lời và xoá nó đi
         for (int i = 0; i < arrDapAn.size(); i++) {
             if (goiY.equals(arrDapAn.get(i))) {
                 arrDapAn.set(i, "");
                 break;
             }
         }
+//        //Tìm ra chữ cái đc gợi ý trong câu trả lời và xoá nó đi
+//        for (int i = 0; i<arrCauTraLoi.size();i++){
+//            if(arrCauTraLoi.get(i).toUpperCase().equals(goiY)){
+//                arrCauTraLoi.set(i,"");
+//                break;
+//            }
+//        }
+
         arrCauTraLoi.set(id, goiY);
         hienThiCauTraLoi();
         hienThiDapAn();
@@ -240,7 +263,7 @@ public class ChoiGameActivity extends AppCompatActivity {
         models.nguoiDung.diem = models.nguoiDung.diem - 5;
         models.luuThongTin();
         txvDiemNguoiDung.setText("Điểm: " + models.nguoiDung.diem);
-
+        checkWin();
     }
 
     public void doiCauHoi(View view) {

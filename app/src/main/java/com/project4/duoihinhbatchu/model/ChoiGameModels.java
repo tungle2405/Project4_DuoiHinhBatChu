@@ -46,4 +46,6 @@ public class ChoiGameModels {
     public void luuThongTin() {
         nguoiDung.saveTT(c);
     }
+
+    public void lamMoiThongTin(){ nguoiDung.resetTT(c); }
 }

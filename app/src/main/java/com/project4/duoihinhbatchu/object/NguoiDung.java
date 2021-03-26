@@ -15,6 +15,12 @@ public class NguoiDung {
     }
     public void getTT(Context ct){
         SharedPreferences settings = ct.getSharedPreferences(nameData,0);
-        diem = settings.getInt("diem",100);
+        diem = settings.getInt("diem",200);
+    }
+    public void resetTT(Context ct){
+        SharedPreferences settings = ct.getSharedPreferences(nameData,0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.remove("diem");
+        editor.commit();
     }
 }
