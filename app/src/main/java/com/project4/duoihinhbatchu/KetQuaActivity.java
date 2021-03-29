@@ -3,6 +3,7 @@ package com.project4.duoihinhbatchu;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class KetQuaActivity extends AppCompatActivity {
+    MediaPlayer player;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,25 @@ public class KetQuaActivity extends AppCompatActivity {
     public void choiLai(View view) {
         if(DATA.getData().arrCauDo.size()>0){
             startActivity(new Intent(this,ChoiGameActivity.class));
+        }
+    }
+
+    //Hàm xử lý nhạc nền
+    public void choiNhac(){
+        if(player == null){
+            player = MediaPlayer.create(this,R.raw.music);
+        }
+        player.start();
+    }
+
+    public void dungNhac(){
+        stopPlayer();
+    }
+
+    private void stopPlayer(){
+        if(player != null){
+            player.release();
+            player = null;
         }
     }
 }

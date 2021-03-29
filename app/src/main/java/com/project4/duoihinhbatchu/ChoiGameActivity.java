@@ -1,6 +1,7 @@
 package com.project4.duoihinhbatchu;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -44,6 +45,8 @@ public class ChoiGameActivity extends AppCompatActivity {
 
     TextView txvThoiGian;
 
+    MediaPlayer player;
+
     int index = 0;
 
     @Override
@@ -52,11 +55,12 @@ public class ChoiGameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_choi_game);
         init();
         anhXa();
+        choiNhac();
         setOnClick();
         hienCauDo();
     }
 
-    //
+    //Hàm ánh xạ các item có trên màn hình
     private void anhXa() {
         gdvCauTraLoi = findViewById(R.id.gdvCauTraLoi);
         gdvDapAn = findViewById(R.id.gdvDapAn);
@@ -79,6 +83,8 @@ public class ChoiGameActivity extends AppCompatActivity {
         if(demCauHoi ==  DATA.getData().arrCauDo.size()){
             Intent intent = new Intent(getApplicationContext(), KetQuaActivity.class);
             intent.putExtra("SCORE", models.nguoiDung.diem);
+            mDemNguoc.cancel();
+            dungNhac();
             startActivity(intent);
         }
 
@@ -93,6 +99,8 @@ public class ChoiGameActivity extends AppCompatActivity {
             public void onFinish(){
                 Intent intent = new Intent(getApplicationContext(), KetQuaActivity.class);
                 intent.putExtra("SCORE", models.nguoiDung.diem);
+                mDemNguoc.cancel();
+                dungNhac();
                 startActivity(intent);
             }
         }.start();
@@ -328,5 +336,24 @@ public class ChoiGameActivity extends AppCompatActivity {
     //Hàm reset thời gian
     private void lamMoiThoiGian(){
         mThoiGianConLai = THOI_GIAN_BAT_DAU;
+    }
+
+    //Hàm xử lý nhạc nền
+    public void choiNhac(){
+        if(player == null){
+            player = MediaPlayer.create(this,R.raw.music);
+        }
+        player.start();
+    }
+
+    public void dungNhac(){
+        stopPlayer();
+    }
+
+    private void stopPlayer(){
+        if(player != null){
+            player.release();
+            player = null;
+        }
     }
 }
